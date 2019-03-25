@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
+import * as moment from 'moment';
+
+import { BookingService } from '../Services/booking.service';
+// import { BookingNewService } from '../Services/booking-new.service';
 
 @Component({
   selector: 'app-bookboardroom',
@@ -34,7 +38,18 @@ export class BookboardroomComponent implements OnInit {
     month: null,
     year: null
   };
-  constructor(private route: ActivatedRoute) { }
+
+  // Need to add properties to double bind to dates in the front.
+  private startTimeValue: string = moment().format("YYYY-MM-DD[T]HH:mm:ss");
+  private endTimeValue: string = moment().add(1, 'hour').format("YYYY-MM-DD[T]HH:mm:ss");
+  private currentMoment: string = moment().format("YYYY-MM-DD[T]HH:mm:ss");
+
+  // private bookingFailure: boolean = false;
+
+  constructor(
+    private route: ActivatedRoute,
+    private bookingService: BookingService
+  ) { }
 
   ngOnInit() {
     this.currentParams = this.route.snapshot.params['id']; // Collab?id=0
@@ -48,5 +63,27 @@ export class BookboardroomComponent implements OnInit {
     }
     console.log(this.todayDate);
   }
+
+  makeBooking() {
+    // Upon success, redirect to My-Bookings. Do request here.
+
+    // Upon failure, pop modal and state why.
+    if (moment(this.endTimeValue, "YYYY-MM-DD[T]HH:mm:ss").isBefore(moment(this.startTimeValue, "YYYY-MM-DD[T]HH:mm:ss"))) {
+      document.getElementById("openModalButton").click();
+    }
+    else if (moment(this.endTimeValue, "YYYY-MM-DD[T]HH:mm:ss").isBefore(moment(this.currentMoment, "YYYY-MM-DD[T]HH:mm:ss"))) {
+      document.getElementById("openModalButton").click();
+    }
+    else if (moment(this.startTimeValue, "YYYY-MM-DD[T]HH:mm:ss").isBefore(moment(this.currentMoment, "YYYY-MM-DD[T]HH:mm:ss"))) {
+      document.getElementById("openModalButton").click();
+    }
+
+    // If success redirect to my booking, remember to do it in callback.
+    // this.bookingService.makeBooking()
+  }
+
+  // closeBookingFailureModal() {
+  //   // this.bookingFailure = false;
+  // }
 
 }

@@ -14,10 +14,10 @@ export class AuthService {
 
   login(user: User): void {
     // HERE IS THE IP AND STUFF
-    const url = 'http://localhost:3000/user/login?username=' + user.username + '&password=' + user.password;
+    const url = 'localhost:49396/api/login?username';
 
     // OtherStuff
-    this.httpclient.get<{ message: any }>(url, { withCredentials: true }).subscribe(responsedata => {
+    this.httpclient.post<{ message: any }>(url, user, { withCredentials: true }).subscribe(responsedata => {
       // const extras: NavigationExtras = {
       //   queryParams: {
       //     'msg': 'WHERE IS THE LAMB SAUCE - Gordam Ransay'
@@ -29,8 +29,8 @@ export class AuthService {
       if (responsedata['msg'] === 'OK') {
         // Save to localStorage here.
         localStorage.setItem('username', user.username);
-        localStorage.setItem('id', responsedata['id']); // Check this.
-        this.router.navigate(['/profile']);
+        // localStorage.setItem('id', responsedata['id']);
+        this.router.navigate(['/main']);
       }
       else {
         this.router.navigate(['/login']);
@@ -44,11 +44,13 @@ export class AuthService {
     this.router.navigate(['/']);
   }
 
-  checkLoggedIn(): any {
-    const url = 'whatever/user/amiloggedin';
+  checkLoggedIn(): boolean {
+    // const url = 'whatever/user/amiloggedin';
 
-    this.httpclient.get<{ message: any }>(url, { withCredentials: true }).subscribe(responsedata => {
-      return responsedata['msg'] === 'OK';
-    });
+    // this.httpclient.get<{ message: any }>(url, { withCredentials: true }).subscribe(responsedata => {
+    //   return responsedata['msg'] === 'OK';
+    // });
+
+    return !!localStorage.getItem('username');
   }
 }
